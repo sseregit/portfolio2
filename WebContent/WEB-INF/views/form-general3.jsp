@@ -1,0 +1,169 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<!--X-editable [ OPTIONAL ]-->
+<script
+	src="<c:url value="plugins/x-editable/js/bootstrap-editable.min.js"/>"></script>
+
+
+<!--Bootstrap Table [ OPTIONAL ]-->
+<script
+	src="<c:url value="plugins/bootstrap-table/bootstrap-table.min.js"/>"></script>
+
+
+<!--Bootstrap Table Extension [ OPTIONAL ]-->
+<script
+	src="<c:url value ="plugins/bootstrap-table/extensions/editable/bootstrap-table-editable.js"/>"></script>
+
+
+<script type="text/javascript">
+	
+</script>
+<div id="page-head">
+
+	<!--Page Title-->
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+	<div id="page-title">
+		<h1 class="page-header text-overflow">General Elements</h1>
+	</div>
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+	<!--End page title-->
+
+	<!--Breadcrumb-->
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+	<ol class="breadcrumb">
+		<li><a href=""><i class="demo-pli-home"></i></a></li>
+		<li><a href="#">Forms</a></li>
+		<li class="active">General Elements</li>
+	</ol>
+	<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+	<!--End breadcrumb-->
+</div>
+
+<!--Page content-->
+<!--===================================================-->
+<div id="page-content">
+
+
+
+
+	<div class="row">
+		<div class="panel">
+			<div class="panel-heading">
+				<h3 class="panel-title">Block styled form</h3>
+			</div>
+
+
+
+			<!--Hover Rows-->
+			<!--===================================================-->
+			<div class="panel-body">
+				<table class="table table-hover table-vcenter">
+					<thead>
+						<tr>
+
+							<th class="min-width">Number</th>
+							<th>ID</th>
+
+							<th class="text-center">title</th>
+
+							<th class="text-center">reg_date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach items="${result}" var="i">
+							<tr>
+
+								<td>${i.boardNumber}</td>
+								<td>${i.userId }</td>
+							
+						
+							
+								<td class="text-center">
+							<a style="cursor: pointer;" onclick="movePage(this, '/read.do?boardNumber=${i.boardNumber}&currentPageNo=${currentPageNo }')">
+								
+								<span
+									class="text-danger text-semibold" >${i.title }</span></td>
+								</a>
+								<td class="text-center"><span
+									class="text-danger text-semibold">${i.regDate }</span></td>
+							</tr>
+						</c:forEach>
+
+
+					</tbody>
+				</table>
+
+				<div class="panel-body text-center">
+
+					<!--Pagination with disabled and active states-->
+					<!--===================================================-->
+					<ul class="pagination">
+						<c:if test="${pageBlockStart != 1}">
+							<li><a
+								onclick="movePage(this,'/boardList.do?currentPageNo=${pageBlockStart - 1 }')"
+								class="demo-pli-arrow-left"></a></li>
+
+						</c:if>
+						<c:forEach var="o" begin="${pageBlockStart }"
+							end="${pageBlockEnd }" step="1">
+							<c:choose>
+								<c:when test="${o == currentPageNo }">
+									<li class="active"><a
+										onclick="movePage(this,'/boardList.do?currentPageNo=${o}')">${o}</a></li>
+								</c:when>
+								<c:otherwise>
+									<li><a
+										onclick="movePage(this,'/boardList.do?currentPageNo=${o}')">${o}</a></li>
+
+								</c:otherwise>
+							</c:choose>
+						</c:forEach>
+
+						<c:if test="${pageBlockStart + pageBlockSize <= totalPage}">
+							<li><a
+								onclick="movePage(this,'/boardList.do?currentPageNo=${pageBlockEnd + 1 }')"
+								class="demo-pli-arrow-right"></a></li>
+						</c:if>
+
+					</ul>
+
+					<div class="panel-body text-right">
+
+						<!--Icon Buttons-->
+						<!--===================================================-->
+						<c:if test="${sessionScope.userName != null }">
+							<a onclick="movePage(this,'/write.do')">
+								<button class="btn btn-mint btn-icon">
+
+									<i class="demo-psi-pen-5 icon-lg"> </i>
+
+								</button>
+							</a>
+							<!--===================================================-->
+						</c:if>
+
+					</div>
+
+
+
+
+				</div>
+
+			</div>
+			<!--===================================================-->
+			<!--End Hover Rows-->
+
+
+
+		</div>
+
+
+	</div>
+
+
+</div>
+
+
+

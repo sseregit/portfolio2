@@ -1,0 +1,112 @@
+package com.iot.pf.service.impl;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.iot.pf.dao.AttachmentDAO;
+import com.iot.pf.dao.BoardDAO;
+import com.iot.pf.dto.Attachment;
+import com.iot.pf.dto.Board;
+import com.iot.pf.service.BoardService;
+import com.iot.pf.util.FileUtil;
+
+@Service("BoardService")
+@Transactional(rollbackFor= {Exception.class})
+public class BoardServiceImpl implements BoardService {
+
+	@Autowired
+	BoardDAO bd;
+
+	@Autowired
+	AttachmentDAO ad;
+	
+	@Autowired
+	FileUtil fu;
+	
+	@Override
+	public ArrayList<Board> list(HashMap<String, Object> params) {
+		// TODO Auto-generated method stub
+		return bd.list(params);
+	}
+
+	@Override
+	public int count() {
+		// TODO Auto-generated method stub
+		return bd.count();
+	}
+
+	@Override
+	public void writeWithFileInfo(Board board, List<Attachment> info) throws IOException {
+	
+		bd.insert(board);
+		
+		int postNum = board.getBoardNumber();
+		
+		if(board.getHasFile().equals("1")) {
+			for(Attachment att : info) {
+				att.setAttachDocSep(postNum);
+				//파일입력
+				ad.insert(att);
+				//폴더에 복사
+				fu.copyTmpFileToUploadFolder(att);
+				
+			}
+		}
+		
+	}
+
+	@Override
+	public Board getboard(int boardNumber) {
+		// TODO Auto-generated method stub
+		return bd.getboard(boardNumber);
+	}
+
+	@Override
+	public void updateWithFileInfo(Board board, List<Attachment> files) {
+		// TODO Auto-generated method stub
+		bd.update(board);
+		
+		int boardNumber = board.getBoardNumber();
+		
+		if(board.getHasFile().equals("1")) {
+			
+			for(Attachment att : files) {
+				
+				if(att.getAttachSeq() == 0 ) {
+				
+				att.setAttachDocSep(boardNumber);
+				
+				ad.insert(att);
+			
+				try {
+					fu.copyTmpFileToUploadFolder(att);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+				}
+				
+			}
+		}
+		
+	
+	}
+
+	@Override
+	public int delete(int BoardNumber) {
+		// TODO Auto-generated method stub
+		return bd.delete(BoardNumber);
+	}
+
+	
+	
+	
+	
+}

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.iot.pf.dao.UserDAO">
+
+<insert id="insert" parameterType = "User">
+
+INSERT INTO website.user(full_name,user_name,email,password,create_date)
+VALUES(#{fullName},#{userName},#{email},sha2(md5(#{password}),256),NOW());
+
+</insert>
+
+<select id="chkId" resultType="int" parameterType = "String">
+
+select count(user_name) FROM website.user where user_name = #{0};
+
+</select>
+
+<select id="checkId" resultType="int" parameterType = "String">
+
+select count(*) FROM website.user where user_name = #{0} and password = #{1}
+
+</select>
+
+<select id ="password" resultType = "String" parameterType ="String">
+SELECT sha2(md5(#{password}),256);
+</select>
+
+<select id="getUser" resultType="User" parameterType = "String">
+
+SELECT * FROM website.user WHERE user_name = #{0};
+
+</select>
+
+<select id="list" resultType ="User" parameterType ="HashMap">
+
+SELECT seq,full_name,user_name,email,date_format(create_date,'%Y-%m-%d') as create_date,date_format(last_login,'%M %d, %Y') as last_login,reserve FROM website.user order by reserve desc;
+
+</select>
+
+<update id="lastp" parameterType="int">
+
+update website.user set last_login = NOW() , reserve = reserve + 10 WHERE seq = #{0} 
+
+</update>
+
+</mapper>

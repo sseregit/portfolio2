@@ -1,0 +1,17 @@
+package com.iot.pf.service;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.iot.pf.dto.Board;
+
+public interface BoardService {
+	
+	public ArrayList<Board> list(HashMap<String,Object> params);
+	
+	public int insert(Board board);
+	
+	public int count();
+
+
+}

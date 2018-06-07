@@ -1,0 +1,5 @@
+package com.iot.pf.service;
+
+public interface AttachmentService {
+
+}

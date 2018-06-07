@@ -1,0 +1,86 @@
+package com.iot.pf.controller;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+import com.iot.pf.dto.Board;
+import com.iot.pf.service.BoardService;
+
+@Controller
+public class BoardController {
+
+	@Autowired
+	BoardService bs;
+	
+
+	@RequestMapping("/formGeneral3.do")
+	public ModelAndView board(@RequestParam HashMap<String,Object> params) {
+		
+		ModelAndView mv = new ModelAndView();
+		// 총 게시글 수
+				int totalArticle = bs.count();
+				// 한 페이지 보여줄 게시글수
+				int pageArticleCnt = 10;
+				//총 페이지수
+				int totalPage = 0;
+				if(totalArticle % pageArticleCnt == 0) {
+					totalPage = totalArticle / pageArticleCnt;
+				}
+				else{
+					totalPage = totalArticle / pageArticleCnt + 1;
+				}
+				// 현재 페이지 번호 
+				int currentPageNo = 1;
+				if(params.containsKey("currentPageNo")) {
+					currentPageNo = Integer.parseInt(params.get("currentPageNo").toString());
+				}		
+				// 시작게시글
+				int startArticleNo = (currentPageNo - 1) * pageArticleCnt;
+				// 페이지 블럭수
+				int pageBlockSize = 10;
+				//페이지 블럭 시작값
+				int pageBlockStart = 0;
+				pageBlockStart = (currentPageNo - 1) / pageBlockSize * pageBlockSize + 1;
+				//페이지 블럭 종료값
+				int pageBlockEnd = 0;
+				pageBlockEnd = (currentPageNo - 1) / pageBlockSize * pageBlockSize + pageBlockSize;
+				pageBlockEnd = (pageBlockEnd >= totalPage) ? totalPage : pageBlockEnd;
+
+
+				params.put("startArticleNo", startArticleNo);
+				params.put("pageArticleCnt", pageArticleCnt);
+		
+				ArrayList<Board> result = bs.list(params);
+		
+        
+				mv.addObject("result", result);
+				mv.addObject("pageBlockStart",pageBlockStart);
+				mv.addObject("pageBlockEnd",pageBlockEnd);
+				mv.addObject("totalPage",totalPage);
+				mv.addObject("pageBlockSize",pageBlockSize);
+				mv.addObject("currentPageNo",currentPageNo);
+
+		        mv.setViewName("form-general3");
+		
+				return 	mv;
+		
+	}
+	
+	@RequestMapping("/write.do")
+	public ModelAndView write(@RequestParam HashMap<String,Object> params){
+		ModelAndView mv = new ModelAndView();
+		
+		mv.setViewName("write");
+		
+		return mv;
+		
+		
+	}
+}
